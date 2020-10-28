@@ -1,7 +1,7 @@
 package = "log"
-version = "0.0.1-1"
+version = "0.0.1-2"
 source = {
-   url = "git://github.com/azdle/log.lua",
+   url = "git://github.com/azdle/log",
    tag = "0.0.1"
 }
 description = {
