@@ -1,8 +1,8 @@
 package = "log"
-version = "0.0.1-3"
+version = "0.0.2-1"
 source = {
    url = "git://github.com/azdle/log.lua.git",
-   tag = "0.0.1"
+   tag = "0.0.2"
 }
 description = {
    summary = "A generic logging interface for lua",
