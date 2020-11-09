@@ -14,7 +14,7 @@ local revlevels = {}
 for i, level in ipairs(loglevels) do revlevels[level] = i end
 
 local startuploglevel = os and os.getenv
-                           and loglevels[string.lower(os.getenv("LUALOG") or "")]
+                           and revlevels[string.upper(os.getenv("LUALOG") or "")]
                            or revlevels.INFO
 -- TODO: provide interfaces to dynamically set log level
 local currentloglevel = startuploglevel
