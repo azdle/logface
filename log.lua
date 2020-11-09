@@ -21,11 +21,14 @@ local currentloglevel = startuploglevel
 
 local function defaultlogger(from, level, ...)
   if level >= currentloglevel then
+    local components = {}
+    for _, v in ipairs({...}) do table.insert(components,tostring(v)) end
+
     print(string.format(
       "[%s]%s %s",
       loglevels[level],
       from and "("..from..")" or "",
-      table.concat({...}, "\t")
+      table.concat(components, "\t")
     ))
   end
 end
