@@ -1,5 +1,5 @@
 package = "logface"
-version = "0.0.1-1"
+version = "0.0.1-2"
 source = {
    url = "git://github.com/azdle/logface.git",
    tag = "0.0.1"
