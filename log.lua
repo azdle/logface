@@ -15,11 +15,11 @@ for i, level in ipairs(loglevels) do revlevels[level] = i end
 
 local startuploglevel = os and os.getenv
                            and revlevels[string.upper(os.getenv("LUALOG") or "")]
-                           or revlevels.INFO
 -- TODO: provide interfaces to dynamically set log level
 local currentloglevel = startuploglevel
 
 local function defaultlogger(from, level, ...)
+  if not currentloglevel then return end
   if level >= currentloglevel then
     local components = {}
     for _, v in ipairs({...}) do table.insert(components,tostring(v)) end
