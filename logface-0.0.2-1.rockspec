@@ -1,8 +1,8 @@
 package = "logface"
-version = "0.0.1-1"
+version = "0.0.2-1"
 source = {
    url = "git://github.com/azdle/logface.git",
-   tag = "0.0.1"
+   tag = "0.0.2"
 }
 description = {
    summary = "A generic logging interface for lua",
