@@ -66,4 +66,8 @@ function log.setLogLevel(level)
   currentloglevel = level
 end
 
+function log.setLogger(logger)
+  currentlogger = logger
+end
+
 return log
