@@ -15,7 +15,7 @@ for i, level in ipairs(loglevels) do revlevels[level] = i end
 
 local startuploglevel = os and os.getenv
                            and revlevels[string.upper(os.getenv("LUALOG") or "")]
--- TODO: provide interfaces to dynamically set log level
+
 local currentloglevel = startuploglevel
 
 local function defaultlogger(from, level, ...)
@@ -60,6 +60,10 @@ end
 
 function log.trace(...)
   currentlogger(nil, revlevels.TRACE, ...)
+end
+
+function log.setLogLevel(level)
+  currentloglevel = level
 end
 
 return log
