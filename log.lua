@@ -10,29 +10,30 @@ local loglevels = {
   "PRINT",
 }
 
-local revlevels = {}
-for i, level in ipairs(loglevels) do revlevels[level] = i end
+local function setupDefaultLogger()
+  local revlevels = {}
+  for i, level in ipairs(loglevels) do revlevels[level] = i end
+  local startuploglevel = os and os.getenv
+                             and revlevels[string.upper(os.getenv("LUALOG") or "")]
 
-local startuploglevel = os and os.getenv
-                           and revlevels[string.upper(os.getenv("LUALOG") or "")]
+  local currentloglevel = startuploglevel
+  return function(opts, ...)
+    if not currentloglevel then return end
+    if opts.level >= currentloglevel then
+      local components = {}
+      for _, v in ipairs({...}) do table.insert(components,tostring(v)) end
 
-local currentloglevel = startuploglevel
-
-local function defaultlogger(opts, ...)
-  if not currentloglevel then return end
-  if opts.level >= currentloglevel then
-    local components = {}
-    for _, v in ipairs({...}) do table.insert(components,tostring(v)) end
-
-    print(string.format(
-      "[%s]%s %s",
-      loglevels[opts.level],
-      opts.from and "("..opts.from..")" or "",
-      table.concat(components, "\t")
-    ))
+      print(string.format(
+        "[%s]%s %s",
+        loglevels[opts.level],
+        opts.from and "("..opts.from..")" or "",
+        table.concat(components, "\t")
+      ))
+    end
   end
 end
-local currentlogger = defaultlogger -- TODO: allow overriding
+
+local currentlogger = setupDefaultLogger()
 
 function log.print(...)
   currentlogger({level = revlevels.PRINT}, ...)
@@ -60,10 +61,6 @@ end
 
 function log.trace(...)
   currentlogger({level = revlevels.TRACE}, ...)
-end
-
-function log.setLogLevel(level)
-  currentloglevel = level
 end
 
 function log.setLogger(logger)
