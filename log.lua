@@ -10,56 +10,61 @@ local loglevels = {
   "PRINT",
 }
 
-local revlevels = {}
-for i, level in ipairs(loglevels) do revlevels[level] = i end
+local function setupDefaultLogger()
+  local revlevels = {}
+  for i, level in ipairs(loglevels) do revlevels[level] = i end
+  local startuploglevel = os and os.getenv
+                             and revlevels[string.upper(os.getenv("LUALOG") or "")]
 
-local startuploglevel = os and os.getenv
-                           and revlevels[string.upper(os.getenv("LUALOG") or "")]
--- TODO: provide interfaces to dynamically set log level
-local currentloglevel = startuploglevel
+  local currentloglevel = startuploglevel
+  return function(opts, ...)
+    if not currentloglevel then return end
+    if opts.level >= currentloglevel then
+      local components = {}
+      for _, v in ipairs({...}) do table.insert(components,tostring(v)) end
 
-local function defaultlogger(from, level, ...)
-  if not currentloglevel then return end
-  if level >= currentloglevel then
-    local components = {}
-    for _, v in ipairs({...}) do table.insert(components,tostring(v)) end
-
-    print(string.format(
-      "[%s]%s %s",
-      loglevels[level],
-      from and "("..from..")" or "",
-      table.concat(components, "\t")
-    ))
+      print(string.format(
+        "[%s]%s %s",
+        loglevels[opts.level],
+        opts.from and "("..opts.from..")" or "",
+        table.concat(components, "\t")
+      ))
+    end
   end
 end
-local currentlogger = defaultlogger -- TODO: allow overriding
+
+local currentlogger = setupDefaultLogger()
 
 function log.print(...)
-  currentlogger(nil, revlevels.PRINT, ...)
+  currentlogger({level = revlevels.PRINT}, ...)
 end
 
 function log.fatal(...)
-  currentlogger(nil, revlevels.FATAL, ...)
+  currentlogger({level = revlevels.FATAL}, ...)
 end
 
 function log.error(...)
-  currentlogger(nil, revlevels.ERROR, ...)
+  currentlogger({level = revlevels.ERROR}, ...)
 end
 
 function log.warn(...)
-  currentlogger(nil, revlevels.WARN, ...)
+  currentlogger({level = revlevels.WARN}, ...)
 end
 
 function log.info(...)
-  currentlogger(nil, revlevels.INFO, ...)
+  currentlogger({level = revlevels.INFO}, ...)
 end
 
 function log.debug(...)
-  currentlogger(nil, revlevels.DEBUG, ...)
+  currentlogger({level = revlevels.DEBUG}, ...)
 end
 
 function log.trace(...)
-  currentlogger(nil, revlevels.TRACE, ...)
+  currentlogger({level = revlevels.TRACE}, ...)
+end
+
+function log.setLogger(logger)
+  currentlogger = logger
 end
 
 return log
